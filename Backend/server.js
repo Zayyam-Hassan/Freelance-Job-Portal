@@ -25,4 +25,7 @@ app.use("/api/auth" , CreateGig);
 app.use("/api/auth" , GetGig);
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  
 });
+
+console.log("this is server");
