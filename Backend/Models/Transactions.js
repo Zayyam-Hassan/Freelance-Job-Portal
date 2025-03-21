@@ -6,7 +6,6 @@ const TransactionSchema = new mongoose.Schema({
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   freelancer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   amount: { type: Number, required: true },
-  fee: { type: Number, required: true },
   status: { type: String, enum: ['Pending', 'Completed', 'Cancelled'], default: 'Pending' },
   created_at: { type: Date, default: Date.now }
 });
