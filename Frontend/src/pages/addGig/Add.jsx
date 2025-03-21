@@ -17,7 +17,7 @@ const Add = () => {
   };
 
   return (
-    <div className="flex justify-center bg-gray-100 pt-28 pb-20 min-h-screen">
+    <div className="flex justify-center bg-gray-100 pt-6 pb-20 min-h-screen">
       <div className="w-full max-w-5xl bg-white shadow-lg p-10 rounded-lg">
         <h1 className="text-3xl font-bold text-gray-700 mb-8 text-center">
           Add New Gig

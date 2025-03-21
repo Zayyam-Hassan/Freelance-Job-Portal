@@ -18,7 +18,7 @@ const MyGigs = () => {
           <h1 className="text-3xl font-bold">{currentUser.isSeller ? "Gigs" : "Orders"}</h1> 
           {/* ↑ Increased font size */}
           {currentUser.isSeller && (
-            <Link to="/add">
+            <Link to="/addGig">
               <button className="bg-green-500 text-white font-medium px-4 py-2 rounded-md hover:bg-green-600 transition">
                 Add New Gig
               </button>
