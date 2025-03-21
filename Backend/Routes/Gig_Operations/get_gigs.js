@@ -27,7 +27,6 @@ router.get("/gigs", async (req, res) => {
         return res.status(500).json({ error: "Server error." });
     }
 });
-// API To Fetch a Particular Gig
 router.get("/gig/:id", async (req, res) => {
   try {
     const { id } = req.params;
