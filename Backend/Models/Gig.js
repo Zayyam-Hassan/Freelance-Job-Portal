@@ -15,11 +15,8 @@ const GigSchema = new mongoose.Schema({
       price: { type: Number, required: true }
     }
   ],
-  gig_tags : [
-    {
-      tag : { type: String, required: true }
-    }
-  ],
+  gig_tags : 
+     { type: [String], required: true },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date }
 });

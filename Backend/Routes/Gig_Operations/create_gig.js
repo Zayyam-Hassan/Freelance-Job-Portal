@@ -3,7 +3,7 @@ import { Gig } from "../../Models/index.js";
 
 const router = express.Router();
 
-router.post("/create_gig", async (req, res) => {
+router.post("/create/gig", async (req, res) => {
   try {
     const { freelancer_id, title, description, price, category, delivery_time, images, coverimage, gig_extras , gig_tags } = req.body;
 
