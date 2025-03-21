@@ -1,13 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Add = () => {
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
+
+  const handleAddTag = (e) => {
+    e.preventDefault();
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
   return (
     <div className="flex justify-center bg-gray-100 pt-28 pb-20 min-h-screen">
       <div className="w-full max-w-5xl bg-white shadow-lg p-10 rounded-lg">
         <h1 className="text-3xl font-bold text-gray-700 mb-8 text-center">
           Add New Gig
         </h1>
-
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Left Section - Gig Information */}
           <div className="space-y-6">
@@ -62,12 +77,42 @@ const Add = () => {
             </div>
 
             <div>
-              <label className="text-gray-600 font-medium">Short Description</label>
-              <textarea
-                placeholder="Short service description"
-                className="w-full mt-2 px-4 py-3 border rounded-md focus:ring-2 focus:ring-green-400"
-                rows="4"
-              ></textarea>
+              <label className="text-gray-600 font-medium">Gig Tags</label>
+              <div className="mt-2 space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    placeholder="Add a tag"
+                    className="flex-1 px-4 py-3 border rounded-md focus:ring-2 focus:ring-green-400"
+                  />
+                  <button
+                    onClick={handleAddTag}
+                    className="px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                  >
+                    Add Tag
+                  </button>
+                </div>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 p-3 border rounded-md">
+                    {tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full flex items-center gap-2"
+                      >
+                        {tag}
+                        <button
+                          onClick={() => removeTag(tag)}
+                          className="text-gray-500 hover:text-red-500"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-6">

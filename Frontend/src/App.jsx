@@ -64,13 +64,12 @@ import Gigs from "./pages/Gigs/Gigs";
 import Orders from "./pages/orders/Orders";
 import Message from "./pages/Message/Message";
 import Messages from "./pages/Messages/Messages";
-
 const Layout = () => {
   return (
     <>
       <CustomNavbar />
       <div className="min-h-screen bg-gray-100 mt-20">
-        <Outlet /> {/* Renders the child route content */}
+        <Outlet /> 
       </div>
       <Footer />
     </>
@@ -85,6 +84,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} /> {/* ✅ Home page appears first */}
           <Route path="gigs" element={<Gigs />} />
+          <Route path="addGig" element={<AddGig />} />
           <Route path="gig/:id" element={<Gig />} />
           <Route path="add-gig" element={<AddGig />} />
           <Route path="myGigs" element={<MyGigs />} />
