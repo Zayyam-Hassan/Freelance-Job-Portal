@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/create/gig", async (req, res) => {
   try {
-    const { freelancer_id, title, description, price, category, delivery_time, images, coverimage, gig_extras , gig_tags } = req.body;
+    const { freelancer_id, title, description, price, revision , category, delivery_time, images, coverimage, gig_extras , gig_tags } = req.body;
 
     if (!freelancer_id || !title || !description || !price || !category || !delivery_time || !coverimage || !gig_tags) {
       return res.status(400).json({ error: "Missing required gig fields." });
@@ -16,6 +16,7 @@ router.post("/create/gig", async (req, res) => {
       title,
       description,
       price,
+      revision,
       category,
       delivery_time,
       images: images || [],
