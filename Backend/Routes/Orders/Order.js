@@ -7,10 +7,15 @@ const router = express.Router();
 router.get("/freelancer/:freelancerId/orders", async (req, res) => {
   try {
     const { freelancerId } = req.params;
+    const isClient = req.query.isclient === "true"; // Ensure boolean check
+
+    if (!freelancerId) {
+      return res.status(400).json({ message: "Freelancer ID is required" });
+    }
 
     const orders = await Order.find({
-      freelancer_id: freelancerId,
-      status: { $in: ["Pending", "In Progress"] }
+      [isClient ? "freelancer_id" : "client_id"]: freelancerId,
+      status: { $in: ["Pending", "In Progress"] },
     }).populate("gig_id client_id freelancer_id");
 
     if (!orders.length) {
@@ -23,6 +28,7 @@ router.get("/freelancer/:freelancerId/orders", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 
 router.post("/orders", async (req, res) => {

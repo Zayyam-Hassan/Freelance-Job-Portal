@@ -36,5 +36,20 @@ router.get("/messages/unread/:userId", async (req, res) => {
       res.status(500).json({ success: false, message: "Error fetching unread messages", error: error.message });
     }
   });
+
+  router.put("/messages/read/:chatId/:receiverId", async (req, res) => {
+    try {
+      const { chatId, receiverId } = req.params;
+  
+      const updatedMessages = await Message.updateMany(
+        { receiver_id: receiverId, is_read: false }, // Update only unread messages
+        { is_read: true }
+      );
+  
+      res.status(200).json({ success: true, message: "All messages marked as read", updatedMessages });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error updating messages", error: error.message });
+    }
+  });
   
 export default router;
