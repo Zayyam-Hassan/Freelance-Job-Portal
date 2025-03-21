@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/freelancer/:freelancerId/orders", async (req, res) => {
   try {
     const { freelancerId } = req.params;
-    const isClient = req.query.isclient === "true"; // Ensure boolean check
+    const isClient = req.query.isclient === "true"; 
 
     if (!freelancerId) {
       return res.status(400).json({ message: "Freelancer ID is required" });
