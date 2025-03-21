@@ -6,7 +6,9 @@ import ProfessionalInfo from "./Routes/Professional_Info/info.js";
 import CreateGig from "./Routes/Gig_Operations/create_gig.js";
 import GetGig from "./Routes/Gig_Operations/get_gigs.js";
 import Order from "./Routes/Orders/Order.js";
+import Transaction from "./Routes/Transactions/Transaction.js";
 import cors from 'cors';
+
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ app.use(myvar , ProfessionalInfo);
 app.use(myvar , CreateGig);
 app.use(myvar , GetGig);
 app.use(myvar , Order);
+app.use(myvar,Transaction);
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   
