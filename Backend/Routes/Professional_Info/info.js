@@ -11,7 +11,7 @@ router.post("/professional_info", async (req, res) => {
       return res.status(400).json({ error: "Missing required full verification fields." });
     }
 
-    if (!freelancer_portfolio || !freelancer_portfolio.availability || !Array.isArray(freelancer_portfolio.languages) || freelancer_portfolio.languages.length === 0) {
+    if (!freelancer_portfolio ) {
       return res.status(400).json({ error: "Missing required freelancer portfolio fields." });
     }
 
@@ -41,8 +41,6 @@ router.post("/professional_info", async (req, res) => {
     let existingPortfolio = await FreelancerPortfolio.findOne({ freelancer_id: userId });
 
     if (existingPortfolio) {
-      existingPortfolio.languages = freelancer_portfolio.languages;
-      existingPortfolio.availability = freelancer_portfolio.availability;
       existingPortfolio.education = freelancer_portfolio.education || existingPortfolio.education;
       existingPortfolio.skills = freelancer_portfolio.skills || existingPortfolio.skills;
       existingPortfolio.updated_at = new Date();
@@ -51,8 +49,6 @@ router.post("/professional_info", async (req, res) => {
     } else {
       const portfolioData = {
         freelancer_id: userId,
-        languages: freelancer_portfolio.languages,
-        availability: freelancer_portfolio.availability,
         education: freelancer_portfolio.education || [],
         skills: freelancer_portfolio.skills || [],
       };

@@ -3,15 +3,6 @@ import mongoose from "mongoose";
 
 const FreelancerPortfolioSchema = new mongoose.Schema({
   freelancer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  created_at: { type: Date, default: Date.now } ,
-  languages: [{name: { type: String } , level : {type : String , enum : ['Fluent' , 'beginner'] , required : true}}],
-
-  availability: { 
-    type: String, 
-    enum: ['Full-time', 'Part-time', 'Occasional'], 
-    required: true 
-  },
-
   completed_orders: { type: Number, default: 0 },
   overall_rating: { type: Number, min: 1, max: 5, default: 1 },
 
