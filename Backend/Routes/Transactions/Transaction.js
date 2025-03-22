@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import Transaction from "../models/Transaction.js";
-
+import Transaction from "../../Models/Transactions.js";
 const router = express.Router();
 
 /** 

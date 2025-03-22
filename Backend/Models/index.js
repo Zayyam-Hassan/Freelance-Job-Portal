@@ -4,6 +4,6 @@ import Gig from "./Gig.js";
 import Order from "./Order.js";
 import Transaction from "./Transactions.js";
 import Review from "./Reviews.js";
-
-export { User, FreelancerPortfolio, Gig, Order, Transaction, Review };
+import Messages from "./Messages.js";
+export { User, FreelancerPortfolio, Gig, Order, Transaction, Review , Messages };
 

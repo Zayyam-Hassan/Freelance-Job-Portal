@@ -1,6 +1,5 @@
 import express from "express";
-import Message from "../models/Message.js"; // Import the Message model
-
+import Message from "../../Models/Messages.js";
 const router = express.Router();
 
 router.put("/messages/:messageId/read", async (req, res) => {

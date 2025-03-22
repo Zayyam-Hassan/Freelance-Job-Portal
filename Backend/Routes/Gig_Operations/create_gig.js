@@ -10,7 +10,7 @@ router.post("/create/gig", async (req, res) => {
     if (!freelancer_id || !title || !description || !price || !category || !delivery_time || !coverimage || !gig_tags) {
       return res.status(400).json({ error: "Missing required gig fields." });
     }
-
+    
     const gigData = {
       freelancer_id,
       title,

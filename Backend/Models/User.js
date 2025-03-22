@@ -12,7 +12,6 @@ const UserSchema = new mongoose.Schema({
     enum: ['freelancer', 'client', 'admin'], 
     default: 'client'
   },
-
   full_verification: [
     {
       full_name: { type: String },
