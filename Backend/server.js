@@ -9,6 +9,7 @@ import Order from "./Routes/Orders/Order.js";
 import Transaction from "./Routes/Transactions/Transaction.js";
 import Message from "./Routes/Messages/Messages.js";
 import cors from 'cors';
+import Review from "./Routes/Review/Review.js";
 
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.use(myvar , GetGig);
 app.use(myvar , Order);
 app.use(myvar,Transaction);
 app.use(myvar , Message);
+app.use(myvar , Review)
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   

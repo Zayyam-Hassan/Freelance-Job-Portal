@@ -54,7 +54,7 @@ router.get("/messages/unread/:userId", async (req, res) => {
   router.post("/messages", async (req, res) => {
     try {
         const { sender_id, receiver_id, content } = req.body;
-
+    
         if (!sender_id || !receiver_id || !content) {
             return res.status(400).json({ error: "All fields are required." });
         }
