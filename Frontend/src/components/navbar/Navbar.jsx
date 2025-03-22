@@ -52,13 +52,13 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/business" className={`${textColor} hover:text-green-500 transition-colors`}>
+            <Link to="/" className={`${textColor} hover:text-green-500 transition-colors`}>
               Fiverr Business
             </Link>
-            <Link to="/explore" className={`${textColor} hover:text-green-500 transition-colors`}>
+            <Link to="/" className={`${textColor} hover:text-green-500 transition-colors`}>
               Explore
             </Link>
-            <Link to="/language" className={`${textColor} hover:text-green-500 transition-colors`}>
+            <Link to="/" className={`${textColor} hover:text-green-500 transition-colors`}>
               English
             </Link>
 
