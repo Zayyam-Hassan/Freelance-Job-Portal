@@ -1,22 +1,14 @@
 import express from "express";
 import Order from "../../Models/Order.js";
-
 const router = express.Router();
-
-
-router.get("/freelancer/:freelancerId/orders", async (req, res) => {
+import { Gig, User, Review,FreelancerPortfolio } from "../../Models/index.js";
+router.get("/getorders", async (req, res) => {
   try {
-    const { freelancerId } = req.params;
-    const isClient = req.query.isclient === "true"; 
-
-    if (!freelancerId) {
-      return res.status(400).json({ message: "Freelancer ID is required" });
-    }
-
-    const orders = await Order.find({
-      [isClient ? "freelancer_id" : "client_id"]: freelancerId,
-      status: { $in: ["Pending", "In Progress"] },
-    }).populate("gig_id client_id freelancer_id");
+    const orders = await Order.find()
+      .populate("gig_id", "title description price") // Populating gig details
+      .populate("client_id", "username email full_verification") // Client details
+      .populate("freelancer_id", "username email full_verification") // Freelancer details
+      .lean();
 
     if (!orders.length) {
       return res.status(404).json({ message: "No orders found" });
@@ -24,7 +16,42 @@ router.get("/freelancer/:freelancerId/orders", async (req, res) => {
 
     res.status(200).json(orders);
   } catch (error) {
-    console.error("Error fetching orders:", error);
+    console.error("Error fetching all orders:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/orders/:currentUserId", async (req, res) => {
+  try {
+    const { currentUserId } = req.params;
+
+    if (!currentUserId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const orders = await Order.find({
+      $or: [{ freelancer_id: currentUserId }, { client_id: currentUserId }],
+    })
+      .populate({
+        path: "gig_id",
+        select: "title description price category images",
+      }) // Populate gig details
+      .populate({
+        path: "client_id",
+        select: "username email full_verification",
+      }) // Populate client details
+      .populate({
+        path: "freelancer_id",
+        select: "username email full_verification",
+      }) // Populate freelancer details
+      .lean();
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found" });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching user orders:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

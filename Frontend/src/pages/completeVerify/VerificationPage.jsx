@@ -183,6 +183,9 @@
 // };
 
 // export default VerificationPage;
+
+
+
 import React, { useState, useEffect } from "react";
 import "./VerificationPage.css";
 import { Plus } from 'lucide-react';
@@ -209,7 +212,7 @@ const VerificationPage = () => {
   // Check user role from localStorage on component mount
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-    const userIsSeller = currentUser.isSeller;
+    const userIsSeller = !currentUser.isSeller;
     setIsSeller(userIsSeller);
     
     // If not a seller, adjust total steps to 2 (skip professional info)
@@ -356,7 +359,7 @@ const VerificationPage = () => {
       
       if (response.status === 201) {
         alert("Verification completed successfully!");
-        // Redirect or update UI as needed
+        console.log(requestData);
       }
     } catch (error) {
       console.error("Error submitting verification data:", error);
@@ -772,3 +775,4 @@ const VerificationPage = () => {
 };
 
 export default VerificationPage;
+
