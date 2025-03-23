@@ -91,5 +91,20 @@ router.get("/gigs/freelancer/:freelancerId", async (req, res) => {
     return res.status(500).json({ error: "Server error." });
   }
 });
-
+router.delete("/gig/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const gig = await Gig.findById(id);
+    
+    if (!gig) {
+      return res.status(404).json({ error: "Gig not found." });
+    }
+    await Gig.findByIdAndDelete(id);
+    
+    return res.status(200).json({ message: "Gig deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting gig:", error);
+    return res.status(500).json({ error: "Server error." });
+  }
+});
 export default router;
