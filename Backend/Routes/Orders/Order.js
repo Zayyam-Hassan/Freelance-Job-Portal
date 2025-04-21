@@ -69,7 +69,7 @@ router.post("/orders", async (req, res) => {
       total_amount,
       delivery_date,
       requirements,
-      status: "Pending", 
+      status: "In Progress", 
     });
 
     await newOrder.save();
@@ -77,6 +77,35 @@ router.post("/orders", async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to create order", error: error.message });
+  }
+});
+router.delete("/orders/cancel/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    await Order.findByIdAndDelete(orderId);
+    res.status(200).json({ success: true, message: "Order deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.put("/orders/complete/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    order.status = "Completed";
+    await order.save();
+    res.status(200).json({ success: true, message: "Order marked as completed", order });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

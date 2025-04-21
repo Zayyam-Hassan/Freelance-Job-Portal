@@ -107,4 +107,58 @@ router.delete("/gig/:id", async (req, res) => {
     return res.status(500).json({ error: "Server error." });
   }
 });
+//New Endpoints 13 april
+router.get("/gigs/search/:term", async (req, res) => {
+  try {
+    const { term } = req.params;
+    
+    // Use $elemMatch to query within the gig_tags array for a substring match (case-insensitive)
+    const gigs = await Gig.find({
+      gig_tags: { $elemMatch: { $regex: term, $options: "i" } }
+    })
+      .populate("freelancer_id", "username email full_verification")
+      .lean();
+
+    const gigsWithReviews = await Promise.all(
+      gigs.map(async (gig) => {
+        const reviews = await Review.find({ reviewee_id: gig.freelancer_id._id })
+          .populate("reviewer_id", "username email full_verification")
+          .lean();
+        return { ...gig, reviews };
+      })
+    );
+
+    return res.status(200).json({ gigs: gigsWithReviews, totalGigs: gigsWithReviews.length });
+  } catch (error) {
+    console.error("Error searching gigs by tag:", error);
+    return res.status(500).json({ error: "Server error." });
+  }
+});
+
+// New Endpoint: Get gigs by budget range remains unchanged
+router.get("/gigs/budget", async (req, res) => {
+  try {
+    const { min, max } = req.query;
+    const minBudget = Number(min) || 0;
+    const maxBudget = Number(max) || Number.MAX_SAFE_INTEGER;
+    
+    const gigs = await Gig.find({ price: { $gte: minBudget, $lte: maxBudget } })
+      .populate("freelancer_id", "username email full_verification")
+      .lean();
+
+    const gigsWithReviews = await Promise.all(
+      gigs.map(async (gig) => {
+        const reviews = await Review.find({ reviewee_id: gig.freelancer_id._id })
+          .populate("reviewer_id", "username email full_verification")
+          .lean();
+        return { ...gig, reviews };
+      })
+    );
+
+    return res.status(200).json({ gigs: gigsWithReviews, totalGigs: gigsWithReviews.length });
+  } catch (error) {
+    console.error("Error fetching gigs by budget:", error);
+    return res.status(500).json({ error: "Server error." });
+  }
+});
 export default router;

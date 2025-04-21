@@ -132,4 +132,23 @@ router.get("/chat/:user1Id/:user2Id", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error", details: error.message });
     }
 });
+
+router.get("/messages/all", async (req, res) => {
+  try {
+    const messages = await Message.find()
+      .populate("sender_id", "username email full_verification")
+      .populate("receiver_id", "username email full_verification")
+      .lean();
+
+    if (!messages.length) {
+      return res.status(404).json({ success: false, message: "No messages found." });
+    }
+
+    res.status(200).json({ success: true, messages });
+  } catch (error) {
+    console.error("Error fetching all messages:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+  }
+});
+
 export default router;

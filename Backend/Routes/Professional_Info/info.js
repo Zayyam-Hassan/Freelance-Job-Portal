@@ -35,7 +35,7 @@ router.post("/professional_info", async (req, res) => {
         cnic: full_verification.cnic,
       });
     }
-
+    myuser.verified = true;
     await myuser.save();
 
     let existingPortfolio = await FreelancerPortfolio.findOne({ freelancer_id: userId });
