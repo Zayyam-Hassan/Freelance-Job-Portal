@@ -6,7 +6,7 @@ const OrderSchema = new mongoose.Schema({
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   freelancer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   total_amount: { type: Number, required: true },
-  status: { type: String, enum: ['Pending', 'In Progress', 'Completed', 'Cancelled'], default: 'Pending' },
+  status: { type: String, enum: ['In Progress', 'Completed', 'Cancelled'], default: 'In Progress' },
   delivery_date: { type: Date },
   requirements: { type: String },
   revision_count: { type: Number, default: 0 },
