@@ -19,29 +19,29 @@ const Gigs = () => {
   const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [categories, setCategories] = useState([
-    "Graphics & Design",
+    "Web Development",
+    "AI Services",
+    "Graphic Design",
     "Digital Marketing",
-    "Writing & Translation",
-    "Video & Animation",
-    "Music & Audio",
-    "Programming & Tech",
-    "Business",
-    "Lifestyle",
+    "Content Creation",
+    "Mobile Development",
+    "Data Science",
+    "Cloud Services"
   ]);
+  
   const [availableTags, setAvailableTags] = useState([
-    "Minimalist",
-    "Vintage",
-    "Modern",
-    "Professional",
+    "Responsive",
+    "E-commerce",
+    "Landing Page",
     "Logo Design",
-    "Branding",
-    "Illustration",
-    "AI Art",
-    "Character Design",
-    "Social Media",
-    "Web Design",
+    "UI/UX",
+    "WordPress",
+    "SEO",
+    "AI Integration",
+    "ChatBot",
+    "Web App",
+    "Portfolio"
   ]);
-
   const [filters, setFilters] = useState({
     category: "", // Default category
     tags: [],
@@ -126,6 +126,10 @@ const Gigs = () => {
           );
         } else if (sort === "rating") {
           fetchedGigs.sort((a, b) => b.rating - a.rating);
+        } else if (sort === "priceAsc") {
+          fetchedGigs.sort((a, b) => a.price - b.price);
+        } else if (sort === "priceDesc") {
+          fetchedGigs.sort((a, b) => b.price - a.price);
         }
 
         setGigs(fetchedGigs);
@@ -203,9 +207,9 @@ const Gigs = () => {
         <div className="relative mb-8">
           <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-blue-600 opacity-80 rounded-xl"></div>
           <div className="relative py-12 px-8 md:px-12 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">AI Artists</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-3"> Artists</h1>
             <p className="text-lg md:text-xl max-w-2xl">
-              Explore the boundaries of art and technology with Liverr's AI
+              Explore the boundaries of art and technology with Liverr's
               artists
             </p>
 
@@ -217,7 +221,7 @@ const Gigs = () => {
               <input
                 ref={searchRef}
                 type="text"
-                placeholder="Search ..."
+                placeholder="Keyword Search ..."
                 className="w-full py-3 px-5 pr-12 rounded-l-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                 defaultValue={filters.search}
               />
@@ -351,51 +355,68 @@ const Gigs = () => {
               </button>
 
               {/* Sort Dropdown */}
-              <div className="relative flex items-center gap-3 text-sm">
-                <span className="text-gray-500">Sort by</span>
-                <div
-                  className="flex items-center gap-1 cursor-pointer font-medium text-gray-700 hover:text-green-500 transition"
-                  onClick={() => setOpen(!open)}
-                >
-                  <span>
-                    {sort === "sales"
-                      ? "Best Selling"
-                      : sort === "rating"
-                      ? "Top Rated"
-                      : "Newest"}
-                  </span>
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
-                    className={`transition duration-300 ${
-                      open ? "transform rotate-180" : ""
-                    }`}
-                  />
-                </div>
+   {/* Sort Dropdown */}
+<div className="relative flex items-center gap-3 text-sm">
+  <span className="text-gray-500">Sort by</span>
+  <div
+    className="flex items-center gap-1 cursor-pointer font-medium text-gray-700 hover:text-green-500 transition"
+    onClick={() => setOpen(!open)}
+  >
+    <span>
+      {sort === "sales"
+        ? "Sales"
+        : sort === "rating"
+        ? "Top Rated"
+        : sort === "priceAsc"
+        ? "Price: Low to High"
+        : sort === "priceDesc"
+        ? "Price: High to Low"
+        : "Newest"}
+    </span>
+    <FontAwesomeIcon
+      icon={faChevronDown}
+      className={`transition duration-300 ${
+        open ? "transform rotate-180" : ""
+      }`}
+    />
+  </div>
 
-                {/* Dropdown Menu */}
-                {open && (
-                  <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10 w-40">
-                    <button
-                      onClick={() => reSort("createdAt")}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
-                    >
-                      Newest
-                    </button>
-                    <button
-                      onClick={() => reSort("sales")}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
-                    >
-                      Best Selling
-                    </button>
-                    <button
-                      onClick={() => reSort("rating")}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
-                    >
-                      Top Rated
-                    </button>
-                  </div>
-                )}
-              </div>
+  {/* Dropdown Menu */}
+  {open && (
+    <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10 w-48">
+      <button
+        onClick={() => reSort("createdAt")}
+        className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
+      >
+        Newest
+      </button>
+      <button
+        onClick={() => reSort("sales")}
+        className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
+      >
+        Sales
+      </button>
+      <button
+        onClick={() => reSort("rating")}
+        className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
+      >
+        Top Rated
+      </button>
+      <button
+        onClick={() => reSort("priceAsc")}
+        className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
+      >
+        Price: Low to High
+      </button>
+      <button
+        onClick={() => reSort("priceDesc")}
+        className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded transition"
+      >
+        Price: High to Low
+      </button>
+    </div>
+  )}
+</div>
             </div>
 
             {/* Loading State */}

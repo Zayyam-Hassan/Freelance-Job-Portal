@@ -302,79 +302,94 @@ const FreelancerDashboard = () => {
       .reduce((acc, order) => acc + order.total_amount, 0);
   };
 
-  // Effect to fetch user data
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('http://localhost:3000/api/auth/getUsers');
-        
-        // Find the first user with role 'freelancer'
-        const freelancer = response.data.users.find(user => user.role === 'freelancer');
-        
-        if (freelancer) {
-          const fullName = freelancer.full_verification && freelancer.full_verification.length > 0 
-            ? freelancer.full_verification[0].full_name 
-            : freelancer.username;
-            
-          const profileImage = freelancer.full_verification && freelancer.full_verification.length > 0 
-            ? freelancer.full_verification[0].profile_pic 
-            : '/img/man.png';
-          
-          // Count orders with status "In Progress"  
-          const activeOrders = freelancer.orders ? 
-            freelancer.orders.filter(order => order.status === 'In Progress').length : 0;
-          
-          // Calculate value of orders with status "In Progress"
-          const activeOrdersValue = freelancer.orders ? 
-            freelancer.orders
-              .filter(order => order.status === 'In Progress')
-              .reduce((total, order) => total + order.total_amount, 0)
-            : 0;
-
-          // Count orders with status "Completed"
-          const completedOrders = freelancer.orders ? 
-            freelancer.orders.filter(order => order.status === 'Completed').length : 0;
-            
-          const gigsPosted = freelancer.gigs ? freelancer.gigs.length : 0;
-          
-          const rating = calculateAverageRating(freelancer.reviews);
-          
-          const earningsAmount = calculateEarnings(freelancer.orders);
-          
-          // Determine level based on completed orders
-          let level = 'New Seller';
-          if (completedOrders > 10) {
-            level = 'Level 2 Seller';
-          } else if (completedOrders > 5) {
-            level = 'Level 1 Seller';
-          }
-          
-          setUserData({
-            name: fullName,
-            username: freelancer.username,
-            profileImage,
-            level,
-            responseRate: '100%', // You might want to calculate this based on message response time
-            rating,
-            score: rating !== '-' ? `${parseFloat(rating) * 20}%` : '-',
-            earningsMonth: new Date().toLocaleString('default', { month: 'long' }),
-            earningsAmount,
-            gigsPosted,
-            activeOrders,
-            activeOrdersValue,
-            completedOrders
-          });
-        }
+// Effect to fetch user data
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+      
+      // Get current user from localStorage
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      
+      if (!currentUser || !currentUser.id) {
+        console.error('No current user found in localStorage');
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
+        return;
       }
-    };
+      
+      // Fetch all users and find the one matching the current user's ID
+      const response = await axios.get('http://localhost:3000/api/auth/getUsers');
+      
+      // Find the user with the matching ID who is a freelancer
+      const freelancer = response.data.users.find(
+        user => user._id === currentUser.id && user.role === 'freelancer'
+      );
+      
+      if (freelancer) {
+        const fullName = freelancer.full_verification && freelancer.full_verification.length > 0 
+          ? freelancer.full_verification[0].full_name 
+          : freelancer.username;
+          
+        const profileImage = freelancer.full_verification && freelancer.full_verification.length > 0 
+          ? freelancer.full_verification[0].profile_pic 
+          : '/img/man.png';
+        
+        // Count orders with status "In Progress"  
+        const activeOrders = freelancer.orders ? 
+          freelancer.orders.filter(order => order.status === 'In Progress').length : 0;
+        
+        // Calculate value of orders with status "In Progress"
+        const activeOrdersValue = freelancer.orders ? 
+          freelancer.orders
+            .filter(order => order.status === 'In Progress')
+            .reduce((total, order) => total + order.total_amount, 0)
+          : 0;
 
-    fetchUserData();
-  }, []);
+        // Count orders with status "Completed"
+        const completedOrders = freelancer.orders ? 
+          freelancer.orders.filter(order => order.status === 'Completed').length : 0;
+          
+        const gigsPosted = freelancer.gigs ? freelancer.gigs.length : 0;
+        
+        const rating = calculateAverageRating(freelancer.reviews);
+        
+        const earningsAmount = calculateEarnings(freelancer.orders);
+        
+        // Determine level based on completed orders
+        let level = 'New Seller';
+        if (completedOrders > 10) {
+          level = 'Level 2 Seller';
+        } else if (completedOrders > 5) {
+          level = 'Level 1 Seller';
+        }
+        
+        setUserData({
+          name: fullName,
+          username: freelancer.username,
+          profileImage,
+          level,
+          responseRate: '100%', // You might want to calculate this based on message response time
+          rating,
+          score: rating !== '-' ? `${parseFloat(rating) * 20}%` : '-',
+          earningsMonth: new Date().toLocaleString('default', { month: 'long' }),
+          earningsAmount,
+          gigsPosted,
+          activeOrders,
+          activeOrdersValue,
+          completedOrders
+        });
+      } else {
+        console.error('Current user not found in users list or not a freelancer');
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setLoading(false);
+    }
+  };
+
+  fetchUserData();
+}, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {

@@ -87,7 +87,13 @@ function Gig() {
     const currentUser = getCurrentUser();
     return currentUser?.id || "mock-client-id";
   };
+  const isCurrentUserSeller = () => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return false;
 
+    const freelancerId = gigData.freelancer_id?._id || gigData.freelancer_id;
+    return currentUser.id === freelancerId;
+  };
   const handleContinueClick = () => {
     const currentUser = getCurrentUser();
     if (!currentUser) {
@@ -245,9 +251,7 @@ function Gig() {
           {/* Left Side */}
           <div className="lg:w-2/3">
             <nav className="text-[#74767E] text-sm mb-5">
-              {gigData.category || "Graphics & Design"} {">"}{" "}
-              {gigData.subcategory || "Website Design"} {">"}{" "}
-              {gigData.service || "Website Development"}
+              {gigData.category || "Graphics & Design"} 
             </nav>
 
             <h1 className="text-[#404145] text-[28px] font-bold mb-6">
@@ -698,32 +702,26 @@ function Gig() {
                     ))}
                   </div>
 
-                  <button
-                    className="w-full bg-[#1DBF73] text-white py-3 rounded-md hover:bg-[#19a463] transition-colors font-medium"
-                    onClick={() => {
-                      const currentUser = getCurrentUser();
-                      if (!currentUser) {
-                        window.location.href = "/register";
-                      } else {
-                        setIsModalOpen(true);
-                      }
-                    }}
-                  >
-                    Continue (${gigPrice})
-                  </button>
-                  <button
-                    className="w-full mt-3 border border-[#1DBF73] text-[#1DBF73] py-3 rounded-md hover:bg-[#F7F9FC] transition-colors font-medium"
-                    onClick={() => {
-                      const currentUser = getCurrentUser();
-                      if (!currentUser) {
-                        window.location.href = "/register";
-                      } else {
-                        setIsMessageModalOpen(true);
-                      }
-                    }}
-                  >
-                    Contact Seller
-                  </button>
+                  {isCurrentUserSeller() ? (
+                    <div className="w-full bg-blue-100 text-blue-700 p-4 rounded-md mb-3 text-center">
+                      This is your gig. You cannot order your own services.
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        className="w-full bg-[#1DBF73] text-white py-3 rounded-md hover:bg-[#19a463] transition-colors font-medium"
+                        onClick={handleContinueClick}
+                      >
+                        Continue (${gigPrice})
+                      </button>
+                      <button
+                        className="w-full mt-3 border border-[#1DBF73] text-[#1DBF73] py-3 rounded-md hover:bg-[#F7F9FC] transition-colors font-medium"
+                        onClick={handleMessageClick}
+                      >
+                        Contact Seller
+                      </button>
+                    </>
+                  )}
                 </>
               )}
             </div>

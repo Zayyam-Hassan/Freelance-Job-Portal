@@ -1,5 +1,5 @@
 import express from "express";
-import { Gig, User, Review,FreelancerPortfolio } from "../../Models/index.js";
+import { Gig, User, Review,FreelancerPortfolio,Order } from "../../Models/index.js";
 
 const router = express.Router();
 
@@ -94,31 +94,70 @@ router.get("/gigs/freelancer/:freelancerId", async (req, res) => {
 router.delete("/gig/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
     const gig = await Gig.findById(id);
-    
     if (!gig) {
       return res.status(404).json({ error: "Gig not found." });
     }
+
+    // Delete the gig
     await Gig.findByIdAndDelete(id);
-    
-    return res.status(200).json({ message: "Gig deleted successfully." });
+
+    // Delete all related orders
+    await Order.deleteMany({ gig_id: id });
+
+    return res.status(200).json({ message: "Gig and related orders deleted successfully." });
   } catch (error) {
-    console.error("Error deleting gig:", error);
+    console.error("Error deleting gig and orders:", error);
     return res.status(500).json({ error: "Server error." });
   }
 });
+
 //New Endpoints 13 april
+// router.get("/gigs/search/:term", async (req, res) => {
+//   try {
+//     const { term } = req.params;
+    
+//     // Use $elemMatch to query within the gig_tags array for a substring match (case-insensitive)
+//     const gigs = await Gig.find({
+//       gig_tags: { $elemMatch: { $regex: term, $options: "i" } }
+//     })
+//       .populate("freelancer_id", "username email full_verification")
+//       .lean();
+
+//     const gigsWithReviews = await Promise.all(
+//       gigs.map(async (gig) => {
+//         const reviews = await Review.find({ reviewee_id: gig.freelancer_id._id })
+//           .populate("reviewer_id", "username email full_verification")
+//           .lean();
+//         return { ...gig, reviews };
+//       })
+//     );
+
+//     return res.status(200).json({ gigs: gigsWithReviews, totalGigs: gigsWithReviews.length });
+//   } catch (error) {
+//     console.error("Error searching gigs by tag:", error);
+//     return res.status(500).json({ error: "Server error." });
+//   }
+// });
 router.get("/gigs/search/:term", async (req, res) => {
   try {
     const { term } = req.params;
-    
-    // Use $elemMatch to query within the gig_tags array for a substring match (case-insensitive)
-    const gigs = await Gig.find({
-      gig_tags: { $elemMatch: { $regex: term, $options: "i" } }
-    })
+
+    // Split term into individual keywords, trim extra spaces, and filter out empties
+    const keywords = term.split(" ").map(t => t.trim()).filter(t => t);
+
+    // Build $or array for case-insensitive matching of each keyword against gig_tags
+    const tagQueries = keywords.map(keyword => ({
+      gig_tags: { $elemMatch: { $regex: keyword, $options: "i" } }
+    }));
+
+    // Query gigs that match any of the keywords in their gig_tags
+    const gigs = await Gig.find({ $or: tagQueries })
       .populate("freelancer_id", "username email full_verification")
       .lean();
 
+    // Attach reviews to each gig
     const gigsWithReviews = await Promise.all(
       gigs.map(async (gig) => {
         const reviews = await Review.find({ reviewee_id: gig.freelancer_id._id })

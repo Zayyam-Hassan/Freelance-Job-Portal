@@ -3,7 +3,33 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../../Models/index.js";
 
+
+
 const router = express.Router();
+router.put("/hashPasswords", async (req, res) => {
+  try {
+    const users = await User.find(); // Get all users
+
+    const updatedUsers = await Promise.all(
+      users.map(async (user) => {
+        if (user.password.startsWith("$2b$")) return null;
+
+        const hashed = await bcrypt.hash(user.password, 10);
+        user.password = hashed;
+        await user.save();
+        return user.username;
+      })
+    );
+
+    res.status(200).json({
+      message: "Passwords hashed successfully",
+      updatedUsers: updatedUsers.filter(Boolean),
+    });
+  } catch (error) {
+    console.error("Error hashing passwords:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 router.post("/signup", async (req, res) => {
   try {

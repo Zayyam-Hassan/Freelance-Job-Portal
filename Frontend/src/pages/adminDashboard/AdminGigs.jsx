@@ -36,6 +36,19 @@ const AdminGigs = () => {
     fetchGigs();
   }, []);
 
+  // Calculate average rating from reviews
+  const calculateAverageRating = (reviews) => {
+    if (!reviews || reviews.length === 0) return 0;
+    
+    // Sum all ratings
+    const sum = reviews.reduce((total, review) => {
+      return total + (review.rating || 0);
+    }, 0);
+    
+    // Calculate average
+    return sum / reviews.length;
+  };
+
   // Filter gigs based on search criteria
   const filteredGigs = gigs.filter(gig => {
     const matchesTitle = searchTitle
@@ -43,10 +56,18 @@ const AdminGigs = () => {
         gig.description?.toLowerCase().includes(searchTitle.toLowerCase())
       : true;
     
-    const matchesCategory = selectedCategory ? gig.category === selectedCategory : true;
+      const categoryLower = selectedCategory?.toLowerCase();
+
+      const matchesCategory = selectedCategory
+        ? gig.category?.toLowerCase().includes(categoryLower) ||
+          gig.gig_tags?.some(tag => tag.toLowerCase().includes(categoryLower))
+        : true;
+    
+    // Calculate average rating for this gig
+    const avgRating = calculateAverageRating(gig.reviews || []);
     
     const matchesRating = selectedRating
-      ? (gig.reviews?.rating || 0) >= parseInt(selectedRating)
+      ? avgRating >= parseInt(selectedRating)
       : true;
     
     return matchesTitle && matchesCategory && matchesRating;
@@ -90,11 +111,14 @@ const AdminGigs = () => {
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
               <option value="">All Categories</option>
-              <option value="graphics">Graphics & Design</option>
-              <option value="web-dev">Web Development</option>
-              <option value="writing">Writing & Translation</option>
-              <option value="video">Video & Animation</option>
-              <option value="music">Music & Audio</option>
+              <option value="frontend">Frontend </option>
+              <option value="backend">Backend </option>
+              <option value="fullstack">Website Development</option>
+              <option value="graphics-design">Graphics Design</option>
+              <option value="content-writing">Content Writing</option>
+              <option value="digital-marketing">Digital Marketing</option>
+              <option value="video-editing">Video Editing</option>
+              <option value="audio-production">Audio Production</option>
             </select>
           </div>
           
